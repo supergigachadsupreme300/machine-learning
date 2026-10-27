@@ -1,0 +1,280 @@
+/* Cozy warm theme for Hand Gesture Recognition UI */
+
+QMainWindow {
+    background: #fdf7f0;
+}
+
+QLabel#titleLabel {
+    font-family: "Segoe UI", "Segoe UI Variable", "Microsoft YaHei", sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: #5a4d43;
+    padding-bottom: 4px;
+    background: transparent;
+}
+
+QPushButton {
+    background: #ffffff;
+    border: 1.5px solid #d8cbbf;
+    border-radius: 10px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #5a4d43;
+    min-width: 120px;
+}
+
+QPushButton:enabled:hover {
+    background: #f3e9de;
+    border-color: #c9b7aa;
+}
+
+QPushButton:enabled:pressed {
+    background: #eadfd1;
+}
+
+QPushButton:disabled {
+    background: #f7f3ee;
+    color: #c9bdb1;
+    border-color: #e8ddd3;
+}
+
+QPushButton#btnExit {
+    background: #f7e7e0;
+    border-color: #e3c8b8;
+    color: #9c5a46;
+}
+
+QPushButton#btnExit:hover {
+    background: #f1d7c9;
+}
+
+QLabel#cameraLabel {
+    background: #f5efe7;
+    border: 2px solid #d8cbbf;
+    border-radius: 12px;
+    color: #9a8c7f;
+    font-size: 16px;
+}
+
+QFrame#resultWidget {
+    background: #ffffff;
+    border: 1.5px solid #e8ddd3;
+    border-radius: 16px;
+}
+
+QStatusBar {
+    background: #ffffff;
+    border-top: 1px solid #e8ddd3;
+    color: #8a7d72;
+    font-size: 12px;
+    padding: 4px 8px;
+}
+
+/* Hand Node Position Panel */
+QFrame#landmarkPanel {
+    background: #ffffff;
+    border: 1.5px solid #e8ddd3;
+    border-radius: 16px;
+}
+
+QLabel#landmarkHeader {
+    font-size: 13px;
+    font-weight: 600;
+    color: #5a4d43;
+    padding-bottom: 6px;
+    background: transparent;
+}
+
+QLabel#landmarkName {
+    color: #7a6d62;
+    background: transparent;
+}
+
+QLabel#landmarkCoord {
+    color: #5a4d43;
+    background: transparent;
+}
+
+QLabel#landmarkHint {
+    color: #9a8c7f;
+    font-style: italic;
+    background: transparent;
+    padding-top: 4px;
+}
+
+/* Data Collection Panel */
+QFrame#dataCollectorWidget {
+    background: #ffffff;
+    border: 1.5px solid #e8ddd3;
+    border-radius: 16px;
+}
+
+QLabel#dataHeader {
+    font-size: 13px;
+    font-weight: 600;
+    color: #5a4d43;
+    padding-bottom: 4px;
+    background: transparent;
+}
+
+QLabel#dataInstr {
+    color: #7a6d62;
+    font-size: 9px;
+    background: transparent;
+    padding-bottom: 4px;
+}
+
+QPushButton#btnCollect0,
+QPushButton#btnCollect1,
+QPushButton#btnCollect2,
+QPushButton#btnCollect3,
+QPushButton#btnCollect4,
+QPushButton#btnCollect5,
+QPushButton#btnCollectswipe_left,
+QPushButton#btnCollectswipe_right,
+QPushButton#btnCollectswipe_up,
+QPushButton#btnCollectswipe_down {
+    background: #ffffff;
+    border: 1.5px solid #d8cbbf;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 10px;
+    font-weight: 500;
+    color: #5a4d43;
+}
+
+QPushButton#btnCollect0:hover,
+QPushButton#btnCollect1:hover,
+QPushButton#btnCollect2:hover,
+QPushButton#btnCollect3:hover,
+QPushButton#btnCollect4:hover,
+QPushButton#btnCollect5:hover,
+QPushButton#btnCollectswipe_left:hover,
+QPushButton#btnCollectswipe_right:hover,
+QPushButton#btnCollectswipe_up:hover,
+QPushButton#btnCollectswipe_down:hover {
+    background: #f3e9de;
+    border-color: #c9b7aa;
+}
+
+QPushButton#btnCollect0:pressed,
+QPushButton#btnCollect1:pressed,
+QPushButton#btnCollect2:pressed,
+QPushButton#btnCollect3:pressed,
+QPushButton#btnCollect4:pressed,
+QPushButton#btnCollect5:pressed,
+QPushButton#btnCollectswipe_left:pressed,
+QPushButton#btnCollectswipe_right:pressed,
+QPushButton#btnCollectswipe_up:pressed,
+QPushButton#btnCollectswipe_down:pressed {
+    background: #eadfd1;
+}
+
+/* Add Gesture button */
+QPushButton#btnAddGesture {
+    background: #f7f3ee;
+    border: 1.5px solid #d8cbbf;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 500;
+    color: #5a4d43;
+}
+
+QPushButton#btnAddGesture:hover {
+    background: #f3e9de;
+    border-color: #c9b7aa;
+}
+
+QPushButton#btnAddGesture:pressed {
+    background: #eadfd1;
+}
+
+/* Remove gesture buttons (×) */
+QPushButton[objectName^="btnRemove"] {
+    background: #f7e7e0;
+    border: 1px solid #e3c8b8;
+    border-radius: 6px;
+    color: #9c5a46;
+    font-weight: bold;
+}
+
+QPushButton[objectName^="btnRemove"]:hover {
+    background: #f1d7c9;
+}
+
+/* Right stacked panel */
+QFrame#rightStack {
+    background: #fdf7f0;
+    border-radius: 12px;
+}
+
+/* Camera container */
+QWidget#cameraContainer {
+    background: #f5efe7;
+    border-radius: 12px;
+}
+
+/* Scroll area for data collector */
+QScrollArea {
+    border: none;
+    background: transparent;
+}
+
+QScrollArea > QWidget > QWidget {
+    background: transparent;
+}
+
+QScrollBar:vertical {
+    background: #f3e9de;
+    width: 10px;
+    border-radius: 5px;
+    margin: 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #c9b7aa;
+    border-radius: 5px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #b8a394;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+/* Mode toggle button */
+QPushButton#btnMode {
+    background: #f7e7e0;
+    border: 1.5px solid #e3c8b8;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #9c5a46;
+}
+
+QPushButton#btnMode:checked {
+    background: #eadfd1;
+    border-color: #c9b7aa;
+    color: #7a4a36;
+}
+
+QPushButton#btnMode:hover {
+    background: #f1d7c9;
+}
+
+/* FPS label */
+QLabel#fpsLabel {
+    color: #5a4d43;
+    background: transparent;
+    padding: 4px 10px;
+    border: 1px solid #d8cbbf;
+    border-radius: 6px;
+    background: #f7f3ee;
+}

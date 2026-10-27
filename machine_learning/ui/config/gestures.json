@@ -1,0 +1,70 @@
+{
+  "gestures": [
+    {
+      "id": "2",
+      "label": "Two",
+      "category": "Static",
+      "color": "#8fa37f"
+    },
+    {
+      "id": "3",
+      "label": "Three",
+      "category": "Static",
+      "color": "#8fa37f"
+    },
+    {
+      "id": "4",
+      "label": "Four",
+      "category": "Static",
+      "color": "#8fa37f"
+    },
+    {
+      "id": "5",
+      "label": "Five",
+      "category": "Static",
+      "color": "#8fa37f"
+    },
+    {
+      "id": "swipe_left",
+      "label": "Swipe Left",
+      "category": "Moving",
+      "color": "#c98a5b"
+    },
+    {
+      "id": "swipe_right",
+      "label": "Swipe Right",
+      "category": "Moving",
+      "color": "#c98a5b"
+    },
+    {
+      "id": "swipe_up",
+      "label": "Swipe Up",
+      "category": "Moving",
+      "color": "#c98a5b"
+    },
+    {
+      "id": "swipe_down",
+      "label": "Swipe Down",
+      "category": "Moving",
+      "color": "#c98a5b"
+    },
+    {
+      "id": "1",
+      "label": "One",
+      "category": "Static",
+      "color": "#5a4d43"
+    }
+  ],
+  "categories": [
+    {
+      "id": "Static",
+      "label": "Static",
+      "color": "#8fa37f"
+    },
+    {
+      "id": "Moving",
+      "label": "Moving",
+      "color": "#c98a5b"
+    }
+  ]
+}
