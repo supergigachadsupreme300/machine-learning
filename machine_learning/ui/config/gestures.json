@@ -53,6 +53,48 @@
       "label": "One",
       "category": "Static",
       "color": "#5a4d43"
+    },
+    {
+      "id": "ok",
+      "label": "OK (Click)",
+      "category": "Static",
+      "color": "#b07aa1"
+    },
+    {
+      "id": "point_up",
+      "label": "Point Up",
+      "category": "Static",
+      "color": "#6c8ebf"
+    },
+    {
+      "id": "point_down",
+      "label": "Point Down",
+      "category": "Static",
+      "color": "#6c8ebf"
+    },
+    {
+      "id": "point_left",
+      "label": "Point Left",
+      "category": "Static",
+      "color": "#6c8ebf"
+    },
+    {
+      "id": "point_right",
+      "label": "Point Right",
+      "category": "Static",
+      "color": "#6c8ebf"
+    },
+    {
+      "id": "fist",
+      "label": "Fist (Zoom In)",
+      "category": "Static",
+      "color": "#c98a5b"
+    },
+    {
+      "id": "open_hand",
+      "label": "Open Hand (Zoom Out)",
+      "category": "Static",
+      "color": "#c98a5b"
     }
   ],
   "categories": [
