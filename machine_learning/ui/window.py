@@ -11,6 +11,9 @@ Layout:
 
 from __future__ import annotations
 
+import time
+from pathlib import Path
+
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
@@ -23,9 +26,17 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+# Make the workspace-root ``functions`` package importable from the ui package.
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+import sys  # noqa: E402
+
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
 from camera_thread import CameraThread
 from config.gesture_config import GestureConfig
 from data_collector import DataCollector, DataCollectorWidget
+from functions import execute_gesture, get_gesture_label
 from inference_thread import InferenceThread
 from landmark_panel import LandmarkPanel
 from model_adapter import ModelAdapter
@@ -150,6 +161,8 @@ class MainWindow(QMainWindow):
         # Annotated frame (with landmarks) goes to camera display
         self.inference_thread.annotated_frame_ready.connect(self._update_frame)
         self.inference_thread.result_ready.connect(self.result_widget.set_result)
+        # Dispatch the recognised gesture to its screen/mouse action.
+        self.inference_thread.result_ready.connect(self._on_gesture_result)
         self.inference_thread.landmarks_ready.connect(self.landmark_panel.set_landmarks)
         self.inference_thread.landmarks_ready.connect(self.data_collector_widget.update_landmarks)
         self.data_collector.saved.connect(self._on_data_saved)
@@ -231,6 +244,25 @@ class MainWindow(QMainWindow):
 
     def _show_error(self, message: str) -> None:
         self.statusBar().showMessage(f"Error: {message}", 5000)
+
+    def _on_gesture_result(self, label: str, confidence: float) -> None:
+        """Dispatch a recognised gesture to its matching action.
+
+        ``execute_gesture`` enforces a per-gesture cooldown so a held pose does
+        not spam the action. One-shot gestures (click, zoom, swipe) fire once
+        per hold; pointing gestures repeat while held so the cursor keeps moving.
+        """
+        if not label or label == "No hand":
+            return
+        try:
+            executed = execute_gesture(label)
+        except Exception as exc:  # pragma: no cover - defensive
+            self._show_error(f"Lỗi điều khiển: {exc}")
+            return
+        if executed:
+            self.statusBar().showMessage(
+                f"Điều khiển: {get_gesture_label(label)}", 2000
+            )
 
     # ------------------------------------------------------------------ #
     # Lifecycle
