@@ -1,0 +1,13 @@
+[
+  "CLICK",
+  "MOUSE_DOWN",
+  "MOUSE_LEFT",
+  "MOUSE_RIGHT",
+  "MOUSE_UP",
+  "SCROLL_DOWN",
+  "SCROLL_LEFT",
+  "SCROLL_RIGHT",
+  "SCROLL_UP",
+  "ZOOM_IN",
+  "ZOOM_OUT"
+]

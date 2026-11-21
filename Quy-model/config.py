@@ -1,42 +1,22 @@
-"""Configuration for Quy-model gesture classifier (landmark-based)."""
+"""Configuration for Quy-model (landmark-based via MediaPipe)."""
 from pathlib import Path
 
 PROJ_ROOT = Path(__file__).resolve().parent
 ROOT_PROJ = PROJ_ROOT.parent
 
-# Prefer local data folder, fall back to repository-root data folder
 DATA_DIR = PROJ_ROOT / "data"
-if not (DATA_DIR / "raw").exists() or not any((DATA_DIR / "raw").rglob("*.csv")):
+if not (DATA_DIR / "raw").exists() or not any((DATA_DIR / "raw").rglob("*.jpg")):
     if (ROOT_PROJ / "data").exists():
         DATA_DIR = ROOT_PROJ / "data"
 
-RAW_DATA_DIR = DATA_DIR / "raw"
-SPLIT_DATA_DIR = DATA_DIR / "split"
-TRAIN_DIR = SPLIT_DATA_DIR / "train"
-VAL_DIR = SPLIT_DATA_DIR / "val"
-TEST_DIR = SPLIT_DATA_DIR / "test"
-
+DATA_ROOT = DATA_DIR / "raw"
 MODELS_DIR = PROJ_ROOT / "models"
 REPORTS_DIR = PROJ_ROOT / "reports"
 
-# Landmark features: 21 MediaPipe hand landmarks * (x, y, z) = 63
-NUM_LANDMARKS = 21
-FEATURE_DIM = NUM_LANDMARKS * 3
+HAND_LANDMARKER = ROOT_PROJ / "machine_learning" / "ui" / "models" / "hand_landmarker.task"
 
-# Training
-TEST_SIZE = 0.15
-VAL_SIZE = 0.15
+IMG_SIZE = 64  # not used for landmarks, kept for compat
+TEST_SIZE = 0.2
 SEED = 42
 
-# Model selection: "random_forest", "svm", "knn", "gradient_boosting",
-# "mlp", "logistic", "torch_mlp"
-MODEL_NAME = "random_forest"
-CV_FOLDS = 5
-
-# PyTorch MLP (only used when MODEL_NAME == "torch_mlp")
-TORCH_EPOCHS = 50
-TORCH_BATCH_SIZE = 64
-TORCH_LR = 1e-3
-TORCH_HIDDEN = [128, 64]
-
-DEVICE = "auto"  # auto/cpu/cuda
+MODEL_NAME = "random_forest"  # random_forest, svm, mlp, decision_tree

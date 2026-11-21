@@ -11,11 +11,11 @@
 from __future__ import annotations
 
 # Mouse movement distance (pixels) per pointing gesture.
-MOVE_DISTANCE = 120
+MOVE_DISTANCE = 30
 
 # Scroll "clicks" per swipe gesture (pyautogui.scroll: positive = up).
-SCROLL_VERTICAL = 6
-SCROLL_HORIZONTAL = 6
+SCROLL_VERTICAL = 8
+SCROLL_HORIZONTAL = 8
 
 # Cooldown (seconds) between action triggers so a held gesture does not spam.
 ACTION_COOLDOWN = 0.6          # repeat-while-held gestures (mouse move)
