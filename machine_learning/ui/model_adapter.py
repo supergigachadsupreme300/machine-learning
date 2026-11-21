@@ -14,6 +14,7 @@ the hand nodes on the camera feed.
 
 from __future__ import annotations
 
+import math
 from collections import deque
 from pathlib import Path
 from typing import Optional, Tuple
@@ -345,9 +346,66 @@ class ModelAdapter:
         fingers = self._count_extended_fingers(landmarks)
         swipe = self._detect_swipe(landmarks)
 
+        # Dynamic gestures (wrist motion) take priority.
         if swipe is not None:
             return (swipe, min(0.92, detection_conf + 0.02))
+
+        lm = landmarks.landmark
+
+        # 1. OK gesture — thumb tip touching index tip -> left click.
+        if self._is_ok_gesture(lm):
+            return ("ok", min(0.95, detection_conf + 0.03))
+
+        # 2. Pointing with the index finger only -> move mouse 4 directions.
+        if self._is_index_pointing(lm):
+            direction = self._point_direction(lm)
+            return (f"point_{direction}", min(0.95, detection_conf + 0.03))
+
+        # 3. Fist (no finger extended) -> zoom in.
+        if fingers == 0:
+            return ("fist", min(0.95, detection_conf + 0.03))
+
+        # 4. Open hand (all fingers extended) -> zoom out.
+        if fingers == 5:
+            return ("open_hand", min(0.95, detection_conf + 0.03))
+
         return (str(fingers), min(0.95, detection_conf + 0.03))
+
+    # ------------------------------------------------------------------ #
+    # Helpers: control-gesture detection (MediaPipe hand landmark indices)
+    # ------------------------------------------------------------------ #
+    @staticmethod
+    def _finger_extended(lm, tip: int, pip: int) -> bool:
+        """True if a finger is extended (tip above its PIP joint)."""
+        return lm[tip].y < lm[pip].y - 0.015
+
+    @staticmethod
+    def _is_ok_gesture(lm) -> bool:
+        """OK: thumb tip (4) touching index tip (8)."""
+        thumb = lm[4]
+        index = lm[8]
+        return math.hypot(thumb.x - index.x, thumb.y - index.y) < 0.05
+
+    @staticmethod
+    def _is_index_pointing(lm) -> bool:
+        """Index extended while middle, ring and pinky stay closed."""
+        return (
+            ModelAdapter._finger_extended(lm, 8, 6)
+            and not ModelAdapter._finger_extended(lm, 12, 10)
+            and not ModelAdapter._finger_extended(lm, 16, 14)
+            and not ModelAdapter._finger_extended(lm, 20, 18)
+        )
+
+    @staticmethod
+    def _point_direction(lm) -> str:
+        """Direction of the index finger (tip vs MCP joint)."""
+        tip = lm[8]
+        mcp = lm[5]
+        dx = tip.x - mcp.x
+        dy = tip.y - mcp.y  # image coords: y increases downward
+        if abs(dx) > abs(dy):
+            return "left" if dx < 0 else "right"
+        return "up" if dy < 0 else "down"
 
     @staticmethod
     def _count_extended_fingers(landmarks) -> int:
