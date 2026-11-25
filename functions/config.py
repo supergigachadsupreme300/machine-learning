@@ -11,7 +11,7 @@
 from __future__ import annotations
 
 # Mouse movement distance (pixels) per pointing gesture.
-MOVE_DISTANCE = 30
+MOVE_DISTANCE = 40
 
 # Scroll "clicks" per swipe gesture (pyautogui.scroll: positive = up).
 SCROLL_VERTICAL = 8

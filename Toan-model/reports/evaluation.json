@@ -1,0 +1,18 @@
+{
+  "accuracy": 0.988795518207283,
+  "macro_f1": 0.9881712193146889,
+  "num_samples": 714,
+  "classes": [
+    "CLICK",
+    "MOUSE_DOWN",
+    "MOUSE_LEFT",
+    "MOUSE_RIGHT",
+    "MOUSE_UP",
+    "SCROLL_DOWN",
+    "SCROLL_LEFT",
+    "SCROLL_RIGHT",
+    "SCROLL_UP",
+    "ZOOM_IN",
+    "ZOOM_OUT"
+  ]
+}

@@ -16,6 +16,11 @@ PROJ_ROOT = Path(__file__).resolve().parents[2]
 CONFIG_DIR = Path(__file__).resolve().parent
 GESTURES_CONFIG = CONFIG_DIR / "gestures.json"
 
+# Inference confidence threshold. When the model's top-class probability is
+# below this, treat the frame as "no gesture" so no action is dispatched for
+# a resting hand. Keep in sync with Toan-model/config.py CONFIDENCE_THRESHOLD.
+CONFIDENCE_THRESHOLD = 0.6
+
 
 class GestureConfig:
     """Manages gesture definitions loaded from gestures.json."""
