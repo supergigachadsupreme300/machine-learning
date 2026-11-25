@@ -1,14 +1,10 @@
-"""Screen control actions (scroll / zoom) driven by hand gestures.
-
-Requires ``pyautogui``. Note: ``pyautogui.hscroll`` (horizontal scroll) is only
-available on Windows; on other platforms horizontal swipes are silently skipped.
-"""
+"""Screen control actions (scroll / zoom) driven by hand gestures."""
 
 from __future__ import annotations
 
 try:
     import pyautogui as _pag
-except Exception:  # pragma: no cover - pyautogui may not be installed yet
+except Exception:
     _pag = None
 
 from .config import SCROLL_HORIZONTAL, SCROLL_VERTICAL
@@ -16,61 +12,36 @@ from .config import SCROLL_HORIZONTAL, SCROLL_VERTICAL
 
 def _require_pyautogui() -> None:
     if _pag is None:
-        raise RuntimeError(
-            "pyautogui is required for screen control. "
-            "Install it with: pip install pyautogui"
-        )
+        raise RuntimeError("pyautogui is required for screen control.")
 
 
-def swipe_up() -> None:
-    """Scroll the screen up.
-
-    Gesture: two fingers swiping up.
-    """
+def swipe_up(amount: int | None = None) -> None:
     _require_pyautogui()
-    _pag.scroll(SCROLL_VERTICAL)
+    _pag.scroll(amount if amount is not None else SCROLL_VERTICAL)
 
 
-def swipe_down() -> None:
-    """Scroll the screen down.
-
-    Gesture: two fingers swiping down.
-    """
+def swipe_down(amount: int | None = None) -> None:
     _require_pyautogui()
-    _pag.scroll(-SCROLL_VERTICAL)
+    _pag.scroll(-(amount if amount is not None else SCROLL_VERTICAL))
 
 
-def swipe_left() -> None:
-    """Scroll the screen left.
-
-    Gesture: two fingers swiping left.
-    """
+def swipe_left(amount: int | None = None) -> None:
     _require_pyautogui()
-    try:
-        _pag.hscroll(-SCROLL_HORIZONTAL)
-    except Exception:
-        # hscroll is Windows-only in pyautogui; ignore elsewhere.
-        pass
+    amt = amount if amount is not None else SCROLL_HORIZONTAL
+    _pag.keyDown("shift")
+    _pag.scroll(-amt)
+    _pag.keyUp("shift")
 
 
-def swipe_right() -> None:
-    """Scroll the screen right.
-
-    Gesture: two fingers swiping right.
-    """
+def swipe_right(amount: int | None = None) -> None:
     _require_pyautogui()
-    try:
-        _pag.hscroll(SCROLL_HORIZONTAL)
-    except Exception:
-        pass
+    amt = amount if amount is not None else SCROLL_HORIZONTAL
+    _pag.keyDown("shift")
+    _pag.scroll(amt)
+    _pag.keyUp("shift")
 
 
 def zoom_in() -> None:
-    """Zoom the screen in.
-
-    Gesture: close all five fingers into a fist.
-    Works in most Windows apps (browser, Explorer, ...) via Ctrl + wheel up.
-    """
     _require_pyautogui()
     _pag.keyDown("ctrl")
     _pag.scroll(SCROLL_VERTICAL)
@@ -78,11 +49,6 @@ def zoom_in() -> None:
 
 
 def zoom_out() -> None:
-    """Zoom the screen out.
-
-    Gesture: open all five fingers.
-    Works in most Windows apps (browser, Explorer, ...) via Ctrl + wheel down.
-    """
     _require_pyautogui()
     _pag.keyDown("ctrl")
     _pag.scroll(-SCROLL_VERTICAL)
