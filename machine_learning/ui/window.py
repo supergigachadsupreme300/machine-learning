@@ -251,8 +251,15 @@ class MainWindow(QMainWindow):
         ``execute_gesture`` enforces a per-gesture cooldown so a held pose does
         not spam the action. One-shot gestures (click, zoom, swipe) fire once
         per hold; pointing gestures repeat while held so the cursor keeps moving.
+
+        A confidence threshold rejects low-confidence predictions (e.g. a
+        resting hand forced into one of the trained gesture classes) so no
+        action is dispatched when the hand is not doing a real gesture.
         """
         if not label or label == "No hand":
+            return
+        # Reject option: suppress actions for low-confidence predictions.
+        if confidence < self.gesture_config.CONFIDENCE_THRESHOLD:
             return
         try:
             executed = execute_gesture(label)

@@ -1,0 +1,11 @@
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Trained model binaries (regenerate with train.py)
+*.joblib
+*.pkl
+
+# OS / editor
+Thumbs.db
+.DS_Store
