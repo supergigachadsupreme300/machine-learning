@@ -9,15 +9,14 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 
-from config import DATA_ROOT, MODELS_DIR, REPORTS_DIR, TEST_SIZE, SEED, MODEL_NAME
+from config import DATA_ROOT, MODELS_DIR, REPORTS_DIR, TEST_SIZE, SEED
 from dataset import load_data
-from model import build_model
+from sklearn.tree import DecisionTreeClassifier
 from utils import save_bundle, save_json
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Train Quy-model (landmarks).")
-    parser.add_argument("--model-name", default=MODEL_NAME)
+    parser = argparse.ArgumentParser(description="Train Quy-model (Decision Tree on landmarks).")
     parser.add_argument("--data-dir", type=Path, default=None)
     parser.add_argument("--max-per-class", type=int, default=80, help="Max images per class (0=all).")
     args = parser.parse_args()
@@ -39,8 +38,8 @@ def main():
     Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=TEST_SIZE, random_state=SEED, stratify=y)
     print(f"Train: {Xtr.shape[0]} | Test: {Xte.shape[0]}")
 
-    model = build_model(args.model_name)
-    print(f"Model: {args.model_name}")
+    model = DecisionTreeClassifier(random_state=SEED)
+    print("Model: decision_tree")
     model.fit(Xtr, ytr)
 
     pred = model.predict(Xte)
@@ -48,12 +47,12 @@ def main():
     f1 = f1_score(yte, pred, average="macro", zero_division=0)
     print(f"Accuracy: {acc:.4f} | Macro F1: {f1:.4f}")
     print("\nClassification report:")
-    print(classification_report(yte, pred, target_names=class_names, zero_division=0))
+    print(classification_report(yte, pred, labels=range(len(class_names)), target_names=class_names, zero_division=0))
 
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     save_bundle(MODELS_DIR / "best.joblib", model, class_names,
-                config={"model_name": args.model_name})
+                config={"model_name": "decision_tree"})
     save_json(MODELS_DIR / "classes.json", class_names)
     save_json(REPORTS_DIR / "evaluation.json", {
         "accuracy": float(acc), "macro_f1": float(f1),

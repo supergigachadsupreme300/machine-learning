@@ -1,7 +1,7 @@
 {
-  "accuracy": 1.0,
-  "macro_f1": 1.0,
-  "num_samples": 174,
+  "accuracy": 0.944206008583691,
+  "macro_f1": 0.9462509377644007,
+  "num_samples": 233,
   "classes": [
     "CLICK",
     "MOUSE_DOWN",

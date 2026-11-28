@@ -51,7 +51,12 @@ def extract_landmarks(img_bgr) -> Optional[np.ndarray]:
 
 def load_data(data_dir, max_per_class: int = 0):
     data_dir = Path(data_dir)
-    class_dirs = sorted([d for d in data_dir.iterdir() if d.is_dir() and any(d.rglob("*.jpg"))])
+    # Support nested layout: data/raw/A/CLICK/*.jpg
+    class_dirs_set = {}
+    for d in data_dir.rglob("*"):
+        if d.is_dir() and any(d.glob("*.jpg")):
+            class_dirs_set[d.name] = d
+    class_dirs = sorted(class_dirs_set.values(), key=lambda p: p.name)
     class_names = [d.name for d in class_dirs]
     X, y = [], []
     for ci, d in enumerate(class_dirs):

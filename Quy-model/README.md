@@ -1,4 +1,4 @@
-# Quy-model — Gesture Classifier (Decision Tree / Random Forest)
+# Quy-model — Gesture Classifier (Decision Tree)
 
 Classical ML model: flattens gesture images into feature vectors and trains a
 Decision Tree (or Random Forest).
@@ -9,17 +9,20 @@ Decision Tree (or Random Forest).
 cd Quy-model
 pip install -r requirements.txt
 
-# Train (decision tree by default)
+# Train (Decision Tree)
 python train.py
-
-# Use random forest instead
-python train.py --model-name random_forest
 
 # Predict
 python predict.py path/to/gesture.jpg
 
 # Evaluate
 python evaluate.py
+
+# Live camera (display only)
+python run_camera.py
+
+# Live camera with gesture actions
+python run_camera.py --execute
 ```
 
 ## Outputs

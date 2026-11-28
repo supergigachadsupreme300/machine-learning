@@ -19,4 +19,4 @@ IMG_SIZE = 64  # not used for landmarks, kept for compat
 TEST_SIZE = 0.2
 SEED = 42
 
-MODEL_NAME = "random_forest"  # random_forest, svm, mlp, decision_tree
+MODEL_NAME = "decision_tree"  # decision_tree, random_forest, svm, mlp

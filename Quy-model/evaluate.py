@@ -9,7 +9,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 
-from config import DATA_ROOT, MODELS_DIR, REPORTS_DIR, IMG_SIZE, TEST_SIZE, SEED
+from config import DATA_ROOT, MODELS_DIR, REPORTS_DIR, TEST_SIZE, SEED
 from dataset import load_data
 from utils import load_bundle, save_json
 
@@ -25,7 +25,7 @@ def main():
         print(f"ERROR: data not found at {data_dir}")
         sys.exit(1)
 
-    X, y, class_names = load_data(data_dir, IMG_SIZE)
+    X, y, class_names = load_data(data_dir)
     _, Xte, _, yte = train_test_split(X, y, test_size=TEST_SIZE, random_state=SEED, stratify=y)
 
     bundle = load_bundle(args.model_path if args.model_path else MODELS_DIR / "best.joblib")
@@ -36,7 +36,7 @@ def main():
     print(f"Accuracy: {acc:.4f}")
     print(f"Macro F1: {f1:.4f}")
     print("\nClassification report:")
-    print(classification_report(yte, pred, target_names=class_names, zero_division=0))
+    print(classification_report(yte, pred, labels=range(len(class_names)), target_names=class_names, zero_division=0))
 
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     save_json(REPORTS_DIR / "evaluation.json", {

@@ -1,0 +1,200 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage[hidelinks]{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\lstset{basicstyle=\ttfamily\small, breaklines=true, frame=single}
+
+\title{\caption{TRƯỜNG ĐẠI HỌC SÀI GÒN \\
+KHOA CÔNG NGHỆ THÔNG TIN}\\
+---------------o0o---------------\\
+\includegraphics[]{logo_sgu.png}\\
+Đồ án môn học:
+máy học\\
+Đề tài:phân loại hình ảnh cử chỉ tay để tương tác với màn hình}
+
+
+
+
+\begin{document}
+\maketitle
+
+
+
+
+\newpage
+\tableofcontents
+\newpage
+
+\section*{Thành viên nhóm}
+\begin{itemize}
+    \item Trần Văn Quý -3124410296
+    \item Nguyễn Thanh Danh -3124410033
+    \item Nguyễn Dương Chí Toàn - 3124410361
+    \item Lê Vũ Đức - 3124720017
+\end{itemize}
+
+\newpage
+\section*{Phân công chi tiết}
+\begin{itemize}
+    \item \textbf{Nguyễn Văn A} (123456)
+    \begin{itemize}
+        \item \underline{\hspace{10cm}}
+        \item \underline{\hspace{10cm}}
+        \item \underline{\hspace{10cm}}
+    \end{itemize}
+    \item \textbf{Trần Thị B} (123457)
+    \begin{itemize}
+        \item \underline{\hspace{10cm}}
+        \item \underline{\hspace{10cm}}
+        \item \underline{\hspace{10cm}}
+    \end{itemize}
+    \item \textbf{Lê Văn C} (123458)
+    \begin{itemize}
+        \item \underline{\hspace{10cm}}
+        \item \underline{\hspace{10cm}}
+        \item \underline{\hspace{10cm}}
+    \end{itemize}
+    \item \textbf{Phạm Văn D} (123459)
+    \begin{itemize}
+        \item \underline{\hspace{10cm}}
+        \item \underline{\hspace{10cm}}
+        \item \underline{\hspace{10cm}}
+    \end{itemize}
+\end{itemize}
+
+\newpage
+
+\section{Lý do thực hiện dự án}
+Trong bối cảnh điều khiển máy tính không tiếp xúc ngày càng phổ biến, việc nhận diện cử chỉ tay (hand gesture recognition) giúp người dùng tương tác với máy tính một cách tự nhiên hơn. Dự án Quy-model xây dựng một hệ thống nhận diện cử chỉ tay từ webcam và ánh xạ sang các hành động điều khiển chuột/màn hình (click, di chuyển, cuộn, zoom). Mục tiêu là so sánh hiệu năng giữa các mô hình trong nhóm và chọn ra mô hình tốt nhất.
+
+Hệ thống bao gồm: thu thập dữ liệu, huấn luyện mô hình, đánh giá và tích hợp real-time qua webcam với các hàm điều khiển trong thư mục \texttt{functions/}.
+
+\section{Khám phá dữ liệu}
+\subsection{Cấu trúc dữ liệu}
+Dữ liệu được thu thập bằng webcam thông qua MediaPipe, lưu dưới dạng ảnh cho từng lớp cử chỉ:
+\begin{itemize}
+    \item CLICK (click chuột)
+    \item MOUSE\_UP, MOUSE\_DOWN, MOUSE\_LEFT, MOUSE\_RIGHT (di chuyển chuột)
+    \item SCROLL\_UP, SCROLL\_DOWN, SCROLL\_LEFT, SCROLL\_RIGHT (cuộn màn hình)
+    \item ZOOM\_IN, ZOOM\_OUT (phóng to/thu nhỏ)
+\end{itemize}
+Dữ liệu mới được tổ chức theo thư mục A/B/C/D (\texttt{data/raw/A/\ldots}) để phân chia theo người thu thập. Mỗi lớp có khoảng 400--480 ảnh gốc.
+
+\subsection{Tăng cường dữ liệu (Augmentation)}
+Dữ liệu sau đó được tăng cường bằng cách lật gương (mirror) các cử chỉ trái/phải, với quy tắc hoán đổi nhãn:
+\begin{itemize}
+    \item MOUSE\_LEFT $\leftrightarrow$ MOUSE\_RIGHT
+    \item SCROLL\_LEFT $\leftrightarrow$ SCROLL\_RIGHT
+    \item Các lớp còn lại giữ nguyên nhãn.
+\end{itemize}
+Điều này đảm bảo dữ liệu cho cả hai tay và tăng số lượng mẫu lên khoảng 2$\times$ (từ $\sim$4930 ảnh gốc lên $\sim$9860 ảnh).
+
+\subsection{Các loại dữ liệu}
+\begin{itemize}
+    \item Ảnh gốc (JPG): \texttt{data/raw/A/\ldots/CLICK/*.jpg}
+    \item Ảnh gương (mirrored): \texttt{data/raw/A/\ldots/*\_mirror.jpg}
+    \item Landmark vector: trích xuất từ ảnh, 63 chiều (21 điểm $\times$ 3)
+\end{itemize}
+
+\subsection{Thống kê}
+Sau trích xuất landmark, tổng số mẫu hợp lệ khoảng 870 (mỗi lớp $\sim$80 mẫu dùng để huấn luyện nhanh, có thể dùng toàn bộ với \texttt{--max-per-class 0}).
+
+\section{Tiền xử lý bài toán}
+\subsection{Trích xuất landmark}
+Sử dụng MediaPipe HandLandmarker (file \texttt{hand\_landmarker.task}) để phát hiện 21 điểm landmark bàn tay từ ảnh. Mỗi landmark có tọa độ $(x, y, z)$.
+
+\subsection{Chuẩn hóa landmark}
+Trích xuất 21 điểm landmark bàn tay, dịch chuyển theo cổ tay và chia tỷ lệ theo kích thước bàn tay để mô hình chỉ học hình dạng cử chỉ, không bị ảnh hưởng bởi vị trí/kích thước. Kết quả là vector 63 chiều.
+
+\subsection{Lọc và chia dữ liệu}
+\begin{itemize}
+    \item Loại bỏ các ảnh không phát hiện được tay.
+    \item Chia dữ liệu thành train/validation/test theo tỷ lệ 60/20/20, stratified theo lớp (đảm bảo mỗi lớp có đủ mẫu trong các tập).
+\end{itemize}
+
+\section{Mô hình}
+\subsection{Cách mô hình học (Decision Tree)}
+Sử dụng hàm \texttt{DecisionTreeClassifier} từ thư viện \texttt{scikit-learn} (sklearn.tree). Hàm này tự động tìm các ngưỡng chia để phân loại dữ liệu. Không cần tự implement thuật toán; chỉ cần gọi \texttt{fit()} để huấn luyện và \texttt{predict()} để dự đoán.
+
+\subsection{Tỷ lệ dữ liệu trước và sau huấn luyện}
+\begin{itemize}
+    \item Trước huấn luyện: dữ liệu chia theo tỷ lệ 60/20/20 (train/val/test). Độ chính xác dự đoán ngẫu nhiên: $1/11 \approx 9.1\%$.
+    \item Sau huấn luyện: mô hình đạt accuracy $\approx$ 0.99 trên tập test, cải thiện đáng kể so với baseline ngẫu nhiên.
+\end{itemize}
+
+\subsection{Các mô hình so sánh}
+Sử dụng các mô hình phân loại trên vector 63 chiều:
+\begin{itemize}
+    \item Decision Tree (mặc định)
+    \item Random Forest (200 cây)
+    \item SVM (RBF kernel, probability=True)
+    \item MLP (hidden layer 128, 64)
+    \item Logistic Regression
+\end{itemize}
+
+\subsection{Phương pháp huấn luyện (chi tiết)}
+\begin{enumerate}
+    \item Tải dữ liệu từ \texttt{data/raw/} (các thư mục A/B/C/D).
+    \item Trích xuất landmark bằng MediaPipe cho từng ảnh, loại bỏ mẫu không phát hiện được tay.
+    \item Chuẩn hóa landmark (dịch chuyển + chia tỷ lệ).
+    \item Chia dữ liệu: train/val/test = 60/20/20 (stratified).
+    \item Khởi tạo mô hình (Decision Tree / Random Forest / \ldots).
+    \item Gọi \texttt{model.fit(X\_train, y\_train)} để huấn luyện.
+    \item Dự đoán trên tập validation và test.
+    \item Tính accuracy, macro F1, confusion matrix.
+    \item Lưu mô hình tốt nhất vào \texttt{models/best.joblib}.
+\end{enumerate}
+
+\begin{lstlisting}[language=Python]
+model = build_model("decision_tree")
+model.fit(X_train, y_train)
+val_pred = model.predict(X_val)
+test_pred = model.predict(X_test)
+\end{lstlisting}
+
+\subsection{Kết quả đánh giá}
+\begin{table}[h]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Mô hình & Accuracy (test) & Macro F1 \\
+\midrule
+Decision Tree & 0.9880 & 0.9876 \\
+Random Forest & 1.0000 & 1.0000 \\
+\bottomrule
+\end{tabular}
+\caption{Kết quả đánh giá trên tập test (833 mẫu huấn luyện).}
+\end{table}
+
+Mô hình được lưu dưới dạng joblib bundle (model + class\_names + config) tại \texttt{models/best.joblib}.
+
+\section{Hậu xử lý bài toán}
+\begin{itemize}
+    \item \textbf{Ánh xạ nhãn}: Nhãn dự đoán (CLICK, MOUSE\_UP, \ldots) được ánh xạ sang các hành động chuột/màn hình (click, moveRel, scroll, zoom) qua \texttt{functions/execute\_gesture}.
+    \item \textbf{Hiệu chỉnh gương}: Camera bị lật (cv2.flip), xử lý bằng cách tăng cường dữ liệu gương và ánh xạ đúng.
+    \item \textbf{Ổn định dự đoán}: Chỉ thực thi hành động khi dự đoán ổn định qua nhiều frame liên tiếp; cooldown cho click/zoom.
+    \item \textbf{Tăng dần khoảng cách}: Di chuyển chuột bắt đầu nhỏ (15px) và tăng dần (+20px mỗi lần lặp) để giảm sai số; reset sau 2 giây không hoạt động.
+    \item \textbf{Cuộn ngang}: Sử dụng Shift+scroll (hoặc hscroll) để hỗ trợ Excel/trình duyệt.
+    \item \textbf{Camera test}: \texttt{camera\_test.py} hỗ trợ \texttt{--auto-execute} và hiển thị dự đoán real-time.
+\end{itemize}
+
+\section{Kết quả}
+\begin{itemize}
+    \item Accuracy trên tập test: $\approx$ 0.99 (Decision Tree), $\approx$ 1.0 (Random Forest).
+    \item Hệ thống chạy real-time qua webcam, nhận diện cử chỉ và điều khiển chuột/màn hình tự động.
+    \item Báo cáo HTML được xuất từ Jupyter notebook: \texttt{reports/gesture\_landmark\_training.html}.
+    \item Mô hình landmark-based cho độ chính xác cao và ổn định trên tập dữ liệu mới.
+\end{itemize}
+
+\section*{Kết luận}
+Quy-model là một hệ thống nhận diện cử chỉ tay hoàn chỉnh, từ thu thập dữ liệu (có tăng cường gương), trích xuất landmark, huấn luyện mô hình, đến tích hợp điều khiển máy tính real-time. Mô hình đạt độ chính xác cao và ổn định trên tập dữ liệu mới với 11 lớp cử chỉ.
+
+\end{document}
